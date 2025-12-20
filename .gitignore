@@ -120,3 +120,4 @@ build/*
 # ignore .clangd and .clang-tidy files
 .clangd
 .clang-tidy
+.cache
