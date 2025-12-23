@@ -1,7 +1,6 @@
 #pragma once
 
 #include "arguments.hpp" // #INCLUDE: arguments.hpp, Module Header
-#include <expected>
 
 namespace simpleCLI::arguments{ // #SCOPE: arguments
 
@@ -9,15 +8,22 @@ namespace simpleCLI::arguments{ // #SCOPE: arguments
 
 // #DIV: Public Static Methods
 
+    // #FUNCTION: convert<T_Arg>(const std::string&), Template Method
+    template<class T_Arg> std::expected<T_Arg, Error> Argument::convert(const std::string& p_value){
+        static_assert(false, "Unsupported type, must provide a conversion function to use this type");
+    } // #END: convert<T_Arg>(const std::string&)
+
     // #FUNCTION: convert<std::string>(const std::string&), Inline Specialized Template Method
     template<> inline std::expected<std::string, Error> Argument::convert(const std::string& p_value){
         return p_value;
     } // #END: convert<std::string>(const std::string&)
 
-    // #FUNCTION: convert<const char*>(const std::string&), Inline Specialized Template Method
-    template<> inline std::expected<const char*, Error> Argument::convert(const std::string& p_value){
-        return p_value.c_str();
-    } // #END: convert<const char*>(const std::string&)
+    // #FUNCTION: convert<char*>(std::string&), Inline Specialized Template Method
+    template<> inline std::expected<char*, Error> Argument::convert(const std::string& p_value){
+        char* cstr = new char[p_value.size() + 1];
+        std::strcpy(cstr, p_value.c_str());
+        return cstr;
+    } // #END: convert<char*>(const std::string&)
 
     // #FUNCTION: convert<char>(const std::string&), Inline Specialized Template Method
     template<> inline std::expected<char, Error> Argument::convert(const std::string& p_value){
@@ -153,7 +159,7 @@ namespace simpleCLI::arguments{ // #SCOPE: arguments
     // #FUNCTION: bind(const std::string&), Override Method
     template<class T_Bind> std::expected<void, Error> VariadicOption<T_Bind>::bind(const std::string& p_bind){
         if(m_bind && m_converter){
-            if(auto result = m_converter(p_bind); result){
+            if(auto result = m_converter(p_bind)){
                 m_bind->push_back(result.value());
                 return {}; // Success return void
             }else{

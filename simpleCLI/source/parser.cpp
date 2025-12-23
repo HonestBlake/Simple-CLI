@@ -151,7 +151,6 @@ namespace simpleCLI::parser{ // #SCOPE: parser
                 std::stoi(p_value);
                 return true; // Is a negative single digit number
             }catch(...){
-                std::cout << "IM HERE" << std::endl;
                 return false; // Not a valid short tag
             }
         }

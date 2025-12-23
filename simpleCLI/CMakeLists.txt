@@ -6,17 +6,24 @@ set(SOURCE_FILES
     "${SIMPLE_CLI}/${SOURCE}/errors.cpp"
 )
 set(INCLUDE_DIR
+    "${ROOT_DIR}/include"
     "${SIMPLE_CLI}/${SOURCE}"
     "${SIMPLE_CLI}/${HEADER}"
-    "${ROOT_DIR}"
+)
+# Create SimpleCLI static library
+add_library(SimpleCLI STATIC)
+
+# Add source and module files
+target_sources(SimpleCLI
+    PRIVATE ${SOURCE_FILES}
 )
 
-add_library(SimpleCLI STATIC ${SOURCE_FILES})
-# add_library(SimpleCLI::SimpleCLI ALIAS SimpleCLI)
+# Link include directories
 target_include_directories(SimpleCLI 
     PUBLIC ${INCLUDE_DIR}
 )
-target_compile_features(SimpleCLI PUBLIC cxx_std_23)
+
+# Set library output properties
 set_target_properties(SimpleCLI PROPERTIES
     PREFIX ""
     SUFFIX ".lib"
