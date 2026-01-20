@@ -12,8 +12,6 @@ class A{
 // }
 
 int main(int argc, char** argv){
-
-    simpleCLI::Error e;
    
     // std::function<void()> helpCallback = [](){
     //     std::cout << "Help called!" << std::endl;
