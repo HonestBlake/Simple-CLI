@@ -31,4 +31,9 @@ set(BINARY "binary")
 set(LIBRARY "library")
 
 add_subdirectory(${SIMPLE_CLI})
-add_subdirectory(${EXAMPLE})
+
+option(SIMPLECLI_BUILD_EXAMPLES "Build examples" OFF)
+
+if(SIMPLECLI_BUILD_EXAMPLES)
+    add_subdirectory(${EXAMPLE})
+endif()
