@@ -1,6 +1,6 @@
 # Simple CLI
 
-**A lightweight, header-only C++ CLI parser library.**  
+**A lightweight, customizable C++ CLI parser library.**  
 Effortlessly handle command-line flags, options, and arguments in C++ with modern, type-safe APIs.
 
 ## Features
