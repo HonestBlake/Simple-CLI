@@ -1,42 +1,23 @@
 # Simple CLI
 
-A customizable, lightweight C++ command line parser library with traditional header builds and C++ module builds.
+**A lightweight, customizable C++ CLI parser library.**  
+Effortlessly handle command-line flags, options, and arguments in C++ with modern, type-safe APIs.
 
-## Base Info
+## Features
+- **Type-Safe Option Parsing:** Supports automatic conversion of CLI arguments to native types, with custom converters possible for user-defined types.
+- **Flexible Flag and Option Handling:** Easily bind variables to flags, single-value options, and variadic (repeatable) options.
+- **Callback Support:** Attach actions to flags or options for dynamic handling (e.g., display help).
+- **Descriptive Error Reporting:** Informative error messages aid development and debugging.
+- **Extensible:** Define converters and integrate with any project structure.
 
-- Language standard: C++23
-- Minimum CMake version used by the project: 4.0.2
-- Tested CMake version: 4.3.3
-- Tested working compilers:
-  - GCC 16.1.0, MSYS2 MinGW64
-  - Clang 22.1.4, MSYS2 MinGW64
-- Build output: static library target named `SimpleCLI`
-- Library file names: `simpleCli.lib` in header mode, `simpleCli-modules.lib` in module mode
-- Default build mode: header mode, unless `SIMPLE_CLI_USE_MODULES` is enabled
+## Getting Started
 
-## Build Modes
+### Prerequisites
+- C++20 or newer compiler GCC, Clang (Both Tested)
+- Runs on Windows(Tested), Linux, macOS
+- No external libraries required
 
-Header mode:
-
-```cpp
-#include <simpleCli/simpleCli.hpp>
-```
-
-Module mode:
-
-```cpp
-import simpleCli;
-```
-
-The public parser API is the same after the include or import.
-
-## Option Types
-
-- `addOption` binds one value from one tag use, such as `--output log.txt`.
-- `addRepeatableOption` appends one value each time the tag is repeated, such as `--item a --item b`.
-- `addContinuousOption` appends values after one tag until another known tag appears, such as `--item a b --output log.txt`.
-
-## Quick Start
+### Quick Start Example
 
 ```cpp
 #include <iostream>
