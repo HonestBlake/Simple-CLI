@@ -100,6 +100,7 @@ CMakeUserPresets.json
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
+!.vscode/*.ps1
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
@@ -110,10 +111,6 @@ CMakeUserPresets.json
 # Built Visual Studio Code Extensions
 *.vsix
 
-# ADDED BY ME
-# ignore .vscode folder
-.vscode/
-
 # ignore build folder
 build/*
 
@@ -121,3 +118,5 @@ build/*
 .clangd
 .clang-tidy
 .cache/
+
+.vscode/

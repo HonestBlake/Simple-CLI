@@ -1,6 +1,17 @@
-#include "arguments.hpp" // #INCLUDE: arguments.hpp, Module Header
+#ifdef SIMPLE_CLI_USE_MODULES
+    module;
 
-namespace simpleCLI::arguments{ // #SCOPE: arguments
+    #include "stdIncludes.hpp"
+
+    module simpleCli; // #FROM: simpleCli, Project Module
+
+    import :arguments; // #IMPORT: arguments, Component Module Partition
+    import :errors; // #IMPORT: errors, Module Partition
+#else
+    #include "arguments.hpp" // #INCLUDE: arguments.hpp, Module Header
+#endif
+
+namespace simpleCli{ // #SCOPE: simpleCli
 
 // #SCOPE: Bindable
 
@@ -81,4 +92,4 @@ namespace simpleCLI::arguments{ // #SCOPE: arguments
 
 // #END: Flag
 
-} // #END: arguments
+} // #END: simpleCli

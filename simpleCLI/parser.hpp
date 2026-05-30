@@ -1,13 +1,18 @@
 #pragma once
 
-#include "simpleCLI.hpp" // #INCLUDE: simpleCLI.hpp, Project Header
-#include "arguments.hpp" // #INCLUDE: arguments.hpp, Module Header
-#include "errors.hpp" // #INCLUDE: errors.hpp, Module Header
+#if defined(SIMPLE_CLI_USE_MODULES) && defined(INCLUDED_BY_MODULE)
+    #define MODULE_EXPORT export
+#else
+    #include "simpleCli.hpp" // #INCLUDE: simpleCli.hpp, Project Header
+    #include "arguments.hpp" // #INCLUDE: arguments.hpp, Module Header
+    #include "errors.hpp" // #INCLUDE: errors.hpp, Module Header
+    #define MODULE_EXPORT
+#endif
 
-namespace simpleCLI::parser{ // #SCOPE: parser
-    
+namespace simpleCli{ // #SCOPE: simpleCli
+
     // #CLASS: Parser, Class
-    class Parser{
+    MODULE_EXPORT class Parser{
     public:
     // Public Factory Methods
         Parser() = default;
@@ -27,10 +32,10 @@ namespace simpleCLI::parser{ // #SCOPE: parser
         template<class T_Bind> std::expected<void, Error> addRepeatableOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, Converter<T_Bind>&& p_converter);
         template<class T_Bind> std::expected<void, Error> addRepeatableOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, const Converter<T_Bind>& p_converter = &Argument::convert<T_Bind>);
         template<class T_Bind> std::expected<void, Error> addRepeatableOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, Converter<T_Bind>&& p_converter);
-        template<class T_Bind> std::expected<void, Error> addVariadicOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const Converter<T_Bind>& p_converter = &Argument::convert<T_Bind>);
-        template<class T_Bind> std::expected<void, Error> addVariadicOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, Converter<T_Bind>&& p_converter);
-        template<class T_Bind> std::expected<void, Error> addVariadicOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, const Converter<T_Bind>& p_converter = &Argument::convert<T_Bind>);
-        template<class T_Bind> std::expected<void, Error> addVariadicOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, Converter<T_Bind>&& p_converter);
+        template<class T_Bind> std::expected<void, Error> addContinuousOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const Converter<T_Bind>& p_converter = &Argument::convert<T_Bind>);
+        template<class T_Bind> std::expected<void, Error> addContinuousOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, Converter<T_Bind>&& p_converter);
+        template<class T_Bind> std::expected<void, Error> addContinuousOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, const Converter<T_Bind>& p_converter = &Argument::convert<T_Bind>);
+        template<class T_Bind> std::expected<void, Error> addContinuousOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, Converter<T_Bind>&& p_converter);
         template<class T_Bind> void addPositional(std::vector<T_Bind>& p_bind, const Converter<T_Bind>& p_converter = &Argument::convert<T_Bind>);
         template<class T_Bind> void addPositional(std::vector<T_Bind>& p_bind, Converter<T_Bind>&& p_converter);
         template<class T_Bind> void addProgram(T_Bind& p_bind, const Converter<T_Bind>& p_converter = &Argument::convert<T_Bind>);
@@ -46,7 +51,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
         bool isValidValue(const std::string& p_value)const;
         std::expected<void, Error> preprocess(std::vector<std::string>& p_commandLine)const;
         std::expected<void, Error> bind(const std::shared_ptr<Argument>& p_bindable, const std::string& p_value)const;
-        std::expected<void, Error> bind(const std::unique_ptr<Bindable>& p_bindable, const std::string& p_value)const;  
+        std::expected<void, Error> bind(const std::unique_ptr<Bindable>& p_bindable, const std::string& p_value)const;
         std::expected<void, Error> flag(const std::shared_ptr<Argument>& p_flaggable)const;
         std::expected<void, Error> callback(const std::shared_ptr<Argument>& p_callable)const;
         std::shared_ptr<Argument> getArgument(const std::string& p_tag)const;
@@ -56,6 +61,8 @@ namespace simpleCLI::parser{ // #SCOPE: parser
         std::unique_ptr<Bindable> m_program;
     }; // #END: Parser
 
-} // #END: parser
+} // #END: simpleCli
+
+#undef MODULE_EXPORT
 
 #include "parser.tpp" // #INCLUDE: parser.tpp, Template Implementation

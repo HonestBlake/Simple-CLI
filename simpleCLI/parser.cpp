@@ -1,11 +1,21 @@
-#include "parser.hpp" // #INCLUDE: parser.hpp, Module Header
-#include "arguments.hpp"
-#include <expected>
-#include <memory>
+#ifdef SIMPLE_CLI_USE_MODULES
+    module;
 
-#include <iostream>
+    #include "stdIncludes.hpp"
 
-namespace simpleCLI::parser{ // #SCOPE: parser
+    module simpleCli;
+
+    import :arguments;
+    import :errors;
+    import :parser;
+#else
+    #include "parser.hpp" // #INCLUDE: parser.hpp, Module Header
+    #include "arguments.hpp"
+    #include <expected>
+    #include <memory>
+#endif
+
+namespace simpleCli{ // #SCOPE: simpleCli
 
 // #SCOPE: Parser
 
@@ -33,7 +43,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
         std::string previousTag = "";
         for(const std::string& arg: commandLine){
             if(auto argument = getArgument(arg)){ // Is a known tag
-                if(previousTakesValue && m_arguments.at(previousTag)->type() != Argument::Type::VARIADIC_OPTION){ // Previous was option that was not given a value
+                if(previousTakesValue && m_arguments.at(previousTag)->type() != Argument::Type::CONTINUOUS_OPTION){ // Previous was option that was not given a value
                     return std::unexpected<Error>({Error::Type::NO_VALUE_PROVIDED, previousTag});
                 }
                 if(argument->type() == Argument::Type::FLAG){ // Is flag
@@ -48,7 +58,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
                     if(auto result = bind(argument, arg); !result){
                         return std::unexpected<Error>(result.error());
                     }
-                    if(argument->type() != Argument::Type::VARIADIC_OPTION){
+                    if(argument->type() != Argument::Type::CONTINUOUS_OPTION){
                         previousTakesValue = false; 
                     }
                 }
@@ -62,7 +72,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
                 }
             }
         }
-        if(previousTakesValue && m_arguments.at(previousTag)->type() != Argument::Type::VARIADIC_OPTION){ // Previous was option that was not given a value
+        if(previousTakesValue && m_arguments.at(previousTag)->type() != Argument::Type::CONTINUOUS_OPTION){ // Previous was option that was not given a value
             return std::unexpected<Error>({Error::Type::NO_VALUE_PROVIDED, previousTag});
         }
         return true; // Successfully parsed arguments
@@ -74,7 +84,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<Flag>(&p_bind);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new Flag(&p_bind));
         }
         return {};
     } // #END: addFlag(const std::initializer_list<std::string_view>, bool&)
@@ -85,7 +95,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<Flag>(p_callback);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new Flag(p_callback));
         }
         return {};
     } // #END: addFlag(const std::initializer_list<std::string_view>, const std::function<void()>&)
@@ -96,7 +106,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<Flag>(std::move(p_callback));
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new Flag(std::move(p_callback)));
         }
         return {};
     } // #END: addFlag(const std::initializer_list<std::string_view>, std::function<void()>&&)
@@ -107,7 +117,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<Flag>(&p_bind, p_callback);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new Flag(&p_bind, p_callback));
         }
         return {};
     } // #END: addFlag(const std::initializer_list<std::string_view>, bool&, const std::function<void()>&)
@@ -118,7 +128,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<Flag>(&p_bind, std::move(p_callback));
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new Flag(&p_bind, std::move(p_callback)));
         }
         return {};
     } // #END: addFlag(const std::initializer_list<std::string_view>, bool&, std::function<void()>&&)
@@ -247,4 +257,4 @@ namespace simpleCLI::parser{ // #SCOPE: parser
 
 // #END: Parser
 
-} // #END: parser
+} // #END: simpleCli

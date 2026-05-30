@@ -1,5 +1,3 @@
-// Public forwarding header
-
 #pragma once
 
-#include "../../simpleCLI/header/arguments.hpp"
+#include "../../simpleCli/arguments.hpp"

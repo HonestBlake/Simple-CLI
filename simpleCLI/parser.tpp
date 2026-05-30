@@ -1,8 +1,10 @@
 #pragma once
 
-#include "parser.hpp" // #INCLUDE: parser.hpp, Module Header
+#ifndef SIMPLE_CLI_USE_MODULES
+    #include "parser.hpp" // #INCLUDE: parser.hpp, Module Header
+#endif
 
-namespace simpleCLI::parser{ // #SCOPE: parser
+namespace simpleCli{ // #SCOPE: simpleCli
 
 // #SCOPE: Parser
 
@@ -14,7 +16,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<Option<T_Bind>>(&p_bind, p_converter);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new Option<T_Bind>(&p_bind, p_converter));
         }
         return {}; // #END: addOption(const std::initializer_list<std::string_view>, T_Bind&, const Converter<T_Bind>&)
     } // #END: 
@@ -25,7 +27,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<Option<T_Bind>>(&p_bind, std::move(p_converter));
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new Option<T_Bind>(&p_bind, std::move(p_converter)));
         }
         return {}; // #END: addOption(const std::initializer_list<std::string_view>, T_Bind&, Converter<T_Bind>&&)
     } // #END: 
@@ -36,7 +38,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<Option<T_Bind>>(&p_bind, p_converter);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new Option<T_Bind>(&p_bind, p_converter));
             p_bind = p_default;
         }
         return {};
@@ -48,7 +50,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<Option<T_Bind>>(&p_bind, std::move(p_converter));
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new Option<T_Bind>(&p_bind, std::move(p_converter)));
             p_bind = p_default;
         }
         return {};
@@ -60,7 +62,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<RepeatableOption<T_Bind>>(&p_bind, p_converter);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new RepeatableOption<T_Bind>(&p_bind, p_converter));
         }
         return {};
     } // #END: addRepeatableOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const Converter<T_Bind>&)
@@ -71,7 +73,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<RepeatableOption<T_Bind>>(&p_bind, std::move(p_converter));
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new RepeatableOption<T_Bind>(&p_bind, std::move(p_converter)));
         }
         return {};
     } // #END: addRepeatableOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, Converter<T_Bind>&&)
@@ -82,7 +84,7 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<RepeatableOption<T_Bind>>(&p_bind, p_converter);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new RepeatableOption<T_Bind>(&p_bind, p_converter));
             p_bind = p_default;
         }
         return {};
@@ -94,57 +96,57 @@ namespace simpleCLI::parser{ // #SCOPE: parser
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<RepeatableOption<T_Bind>>(&p_bind, std::move(p_converter));
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new RepeatableOption<T_Bind>(&p_bind, std::move(p_converter)));
             p_bind = p_default;
         }
         return {};
     } // #END: addRepeatableOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const std::vector<T_Bind>&, Converter<T_Bind>&&)
 
-    // #FUNCTION: addVariadicOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const Converter<T_Bind>&), Template Method
-    template<class T_Bind> std::expected<void, Error> Parser::addVariadicOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const Converter<T_Bind>& p_converter){
+    // #FUNCTION: addContinuousOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const Converter<T_Bind>&), Template Method
+    template<class T_Bind> std::expected<void, Error> Parser::addContinuousOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const Converter<T_Bind>& p_converter){
         for(const std::string_view& tagView: p_tags){
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<VariadicOption<T_Bind>>(&p_bind, p_converter);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new ContinuousOption<T_Bind>(&p_bind, p_converter));
         }
         return {};
-    } // #END: addVariadicOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const Converter<T_Bind>&)
+    } // #END: addContinuousOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const Converter<T_Bind>&)
 
-    // #FUNCTION: addVariadicOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, Converter<T_Bind>&&), Template Method
-    template<class T_Bind> std::expected<void, Error> Parser::addVariadicOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, Converter<T_Bind>&& p_converter){
+    // #FUNCTION: addContinuousOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, Converter<T_Bind>&&), Template Method
+    template<class T_Bind> std::expected<void, Error> Parser::addContinuousOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, Converter<T_Bind>&& p_converter){
         for(const std::string_view& tagView: p_tags){
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<VariadicOption<T_Bind>>(&p_bind, std::move(p_converter));
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new ContinuousOption<T_Bind>(&p_bind, std::move(p_converter)));
         }
         return {};
-    } // #END: addVariadicOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, Converter<T_Bind>&&)
+    } // #END: addContinuousOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, Converter<T_Bind>&&)
 
-    // #FUNCTION: addVariadicOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const std::vector<T_Bind>&, const Converter<T_Bind>&), Template Method
-    template<class T_Bind> std::expected<void, Error> Parser::addVariadicOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, const Converter<T_Bind>& p_converter){
+    // #FUNCTION: addContinuousOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const std::vector<T_Bind>&, const Converter<T_Bind>&), Template Method
+    template<class T_Bind> std::expected<void, Error> Parser::addContinuousOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, const Converter<T_Bind>& p_converter){
         for(const std::string_view& tagView: p_tags){
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<VariadicOption<T_Bind>>(&p_bind, p_converter);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new ContinuousOption<T_Bind>(&p_bind, p_converter));
             p_bind = p_default;
         }
         return {};
-    } // #END: addVariadicOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const std::vector<T_Bind>&, const Converter<T_Bind>&)
+    } // #END: addContinuousOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const std::vector<T_Bind>&, const Converter<T_Bind>&)
 
-    // #FUNCTION: addVariadicOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const std::vector<T_Bind>&, Converter<T_Bind>&&), Template Method
-    template<class T_Bind> std::expected<void, Error> Parser::addVariadicOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, Converter<T_Bind>&& p_converter){
+    // #FUNCTION: addContinuousOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const std::vector<T_Bind>&, Converter<T_Bind>&&), Template Method
+    template<class T_Bind> std::expected<void, Error> Parser::addContinuousOption(const std::initializer_list<std::string_view> p_tags, std::vector<T_Bind>& p_bind, const std::vector<T_Bind>& p_default, Converter<T_Bind>&& p_converter){
         for(const std::string_view& tagView: p_tags){
             std::string tag = std::string(tagView);
             if(!isValidTag(tag)) return std::unexpected<Error>({Error::Type::INVALID_TAG, std::move(tag)});
             if(!isUniqueTag(tag)) return std::unexpected<Error>({Error::Type::REPEATED_TAG, std::move(tag)});
-            m_arguments[std::move(tag)] = std::make_shared<VariadicOption<T_Bind>>(&p_bind, p_converter);
+            m_arguments[std::move(tag)] = std::shared_ptr<Argument>(new ContinuousOption<T_Bind>(&p_bind, p_converter));
             p_bind = p_default;
         }
         return {};
-    } // #END: addVariadicOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const std::vector<T_Bind>&, Converter<T_Bind>&&)
+    } // #END: addContinuousOption(const std::initializer_list<std::string_view>, std::vector<T_Bind>&, const std::vector<T_Bind>&, Converter<T_Bind>&&)
 
     // #FUNCTION: addPositional(const std::vector<T_Bind>&, const Converter<T_Bind>&), Template Method
     template<class T_Bind> void Parser::addPositional(std::vector<T_Bind>& p_bind, const Converter<T_Bind>& p_converter){
@@ -168,4 +170,4 @@ namespace simpleCLI::parser{ // #SCOPE: parser
 
 // #END: Parser
 
-} // #END: parser
+} // #END: simpleCli

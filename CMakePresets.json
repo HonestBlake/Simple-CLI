@@ -1,0 +1,93 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 0,
+    "patch": 2
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "BUILD_EXAMPLE": "ON",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "Debug",
+      "displayName": "Debug",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "SIMPLE_CLI_USE_MODULES": "OFF",
+        "BUILD_EXAMPLE": "ON"
+      }
+    },
+    {
+      "name": "Release",
+      "displayName": "Release",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "SIMPLE_CLI_USE_MODULES": "OFF",
+        "BUILD_EXAMPLE": "ON"
+      }
+    },
+    {
+      "name": "Debug-Modules",
+      "displayName": "Debug Modules",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "SIMPLE_CLI_USE_MODULES": "ON",
+        "BUILD_EXAMPLE": "ON"
+      }
+    },
+    {
+      "name": "Release-Modules",
+      "displayName": "Release Modules",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "SIMPLE_CLI_USE_MODULES": "ON",
+        "BUILD_EXAMPLE": "ON"
+      }
+    },
+    {
+      "name": "Clangd-Modules",
+      "displayName": "Clangd Modules",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "C:/Program Files/MSYS2/mingw64/bin/clang++.exe",
+        "SIMPLE_CLI_USE_MODULES": "ON",
+        "BUILD_EXAMPLE": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "Debug",
+      "configurePreset": "Debug"
+    },
+    {
+      "name": "Release",
+      "configurePreset": "Release"
+    },
+    {
+      "name": "Debug-Modules",
+      "configurePreset": "Debug-Modules"
+    },
+    {
+      "name": "Release-Modules",
+      "configurePreset": "Release-Modules"
+    },
+    {
+      "name": "Clangd-Modules",
+      "configurePreset": "Clangd-Modules"
+    }
+  ]
+}

@@ -1,85 +1,56 @@
-#include <simpleCLI/parser.hpp>
-
 #include <iostream>
+#include <string>
+#include <vector>
 
-class A{
-
-};
-
-// std::expected<A, simpleCLI::Error> myConverter(const std::string& str){
-//     A a;
-//     return a;
-// }
+#ifdef SIMPLE_CLI_USE_MODULES
+import simpleCli;
+#else
+#include <simpleCli/simpleCli.hpp>
+#endif
 
 int main(int argc, char** argv){
-   
-    // std::function<void()> helpCallback = [](){
-    //     std::cout << "Help called!" << std::endl;
-    //     // Help called!
-    // };
-    // bool bind = true;
+    simpleCli::Parser parser;
 
-    // simpleCLI::Parser parser;
-    
-    // if(auto result = parser.addFlag({"-h", "--help"}, bind, helpCallback); !result){
-    //     std::cout << result.error().message() << std::endl;
-    //     return 1;
-    // }
+    bool showHelp = false;
+    std::string output;
+    int count = 0;
+    std::vector<std::string> items;
 
-    // std::string optionValue;
-    // if(auto result = parser.addOption({"-o", "--option"}, optionValue); !result){
-    //     std::cout << result.error().message() << std::endl;
-    //     return 1;
-    // }
+    if(auto result = parser.addFlag({"-h", "--help"}, showHelp, [](){
+        std::cout << "Help called!" << std::endl;
+    }); !result){
+        std::cout << result.error().message() << std::endl;
+        return 1;
+    }
 
-    // A aValue;
-    // if(auto result = parser.addOption<A>({"--a-value"}, aValue, &myConverter); !result){
-    //     std::cout << result.error().message() << std::endl;
-    //     return 1;
-    // }
+    if(auto result = parser.addOption({"-o", "--output"}, output); !result){
+        std::cout << result.error().message() << std::endl;
+        return 1;
+    }
 
-    // int bindInt;
-    // if(auto result = parser.addOption<int>({"-i", "--int"}, bindInt); !result){
-    //     std::cout << result.error().message() << std::endl;
-    //     return 1;
-    // }
+    if(auto result = parser.addOption<int>({"-c", "--count"}, count); !result){
+        std::cout << result.error().message() << std::endl;
+        return 1;
+    }
 
-    // std::vector<std::string> binds;
-    // if(auto result = parser.addVariadicOption<std::string>({"-s", "--strings"}, binds); !result){
-    //     std::cout << result.error().message() << std::endl;
-    //     return 1;
-    // }
+    if(auto result = parser.addContinuousOption<std::string>({"-i", "--item"}, items); !result){
+        std::cout << result.error().message() << std::endl;
+        return 1;
+    }
 
-    // using CStr = char*;
+    if(auto result = parser.parse(argc, argv); !result){
+        std::cout << result.error().message() << std::endl;
+        return 1;
+    }
 
-    // CStr cstr = nullptr;
-    // if(auto result = parser.addOption<CStr>({"-c", "--c-string"}, cstr); !result){
-    //     std::cout << result.error().message() << std::endl;
-    //     return 1;
-    // }
+    std::cout << "Show Help: " << std::boolalpha << showHelp << std::endl;
+    std::cout << "Output: " << output << std::endl;
+    std::cout << "Count: " << count << std::endl;
+    std::cout << "Items: ";
+    for(const std::string& item: items){
+        std::cout << item << " ";
+    }
+    std::cout << std::endl;
 
-
-    
-    // if(auto result = parser.parse(argc, argv); !result){
-    //     std::cout << result.error().message() << std::endl;
-    //     return 1;
-    // }
-
-
-    // std::cout << "Bind int: " << bindInt << std::endl;
-    // std::cout << "Bind: " << bind << std::endl;
-    // std::cout << "Option Value: " << optionValue << std::endl;
-    // std::cout << "Strings: ";
-    // for(const std::string& str: binds){
-    //     std::cout << str << " ";
-    // }
-    // std::cout << std::endl;
-    // std::cout << "CStr: " << cstr << std::endl;
-
-    // if(cstr){
-    //     delete[] cstr;
-    // }
-
-    // hello();
     return 0;
-}   
+}

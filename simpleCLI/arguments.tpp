@@ -1,8 +1,13 @@
 #pragma once
 
-#include "arguments.hpp" // #INCLUDE: arguments.hpp, Module Header
+#ifndef SIMPLE_CLI_USE_MODULES
+    #include "arguments.hpp" // #INCLUDE: arguments.hpp, Module Header
+#endif
 
-namespace simpleCLI::arguments{ // #SCOPE: arguments
+namespace simpleCli{ // #SCOPE: simpleCli
+
+    template<class>
+    inline constexpr bool dependent_false = false;
 
 // #SCOPE: Argument
 
@@ -10,7 +15,7 @@ namespace simpleCLI::arguments{ // #SCOPE: arguments
 
     // #FUNCTION: convert<T_Arg>(const std::string&), Template Method
     template<class T_Arg> std::expected<T_Arg, Error> Argument::convert(const std::string& p_value){
-        static_assert(false, "Unsupported type, must provide a conversion function to use this type");
+        static_assert(dependent_false<T_Arg>, "Unsupported type, must provide a conversion function to use this type");
     } // #END: convert<T_Arg>(const std::string&)
 
     // #FUNCTION: convert<std::string>(const std::string&), Inline Specialized Template Method
@@ -132,32 +137,32 @@ namespace simpleCLI::arguments{ // #SCOPE: arguments
 
 // #END: RepeatableOption<T_Bind>
 
-// #SCOPE: VariadicOption<T_Bind>
+// #SCOPE: ContinuousOption<T_Bind>
 
 // #DIV: Public Factory Methods
 
-    // #FUNCTION: VariadicOption(std::vector<T_Bind>* const, const Converter<T_Bind>&), Template Constructor
-    template<class T_Bind> VariadicOption<T_Bind>::VariadicOption(std::vector<T_Bind>* const p_bind, const Converter<T_Bind>& p_converter){
+    // #FUNCTION: ContinuousOption(std::vector<T_Bind>* const, const Converter<T_Bind>&), Template Constructor
+    template<class T_Bind> ContinuousOption<T_Bind>::ContinuousOption(std::vector<T_Bind>* const p_bind, const Converter<T_Bind>& p_converter){
         m_bind = p_bind;
         m_converter = p_converter;
-    } // #END: VariadicOption(std::vector<T_Bind>* const, const Converter<T_Bind>&)
+    } // #END: ContinuousOption(std::vector<T_Bind>* const, const Converter<T_Bind>&)
 
-    // #FUNCTION: VariadicOption(std::vector<T_Bind>* const, Converter<T_Bind>&&), Template Constructor
-    template<class T_Bind> VariadicOption<T_Bind>::VariadicOption(std::vector<T_Bind>* const p_bind, Converter<T_Bind>&& p_converter){
+    // #FUNCTION: ContinuousOption(std::vector<T_Bind>* const, Converter<T_Bind>&&), Template Constructor
+    template<class T_Bind> ContinuousOption<T_Bind>::ContinuousOption(std::vector<T_Bind>* const p_bind, Converter<T_Bind>&& p_converter){
         m_bind = p_bind;
         m_converter = std::move(p_converter);
-    } // #END: VariadicOption(std::vector<T_Bind>* const, Converter<T_Bind>&&)
+    } // #END: ContinuousOption(std::vector<T_Bind>* const, Converter<T_Bind>&&)
 
 
 // #DIV: Public Methods
 
     // #FUNCTION: type(), Const Override Method
-    template<class T_Bind> Argument::Type VariadicOption<T_Bind>::type()const{
-        return Type::VARIADIC_OPTION;
+    template<class T_Bind> Argument::Type ContinuousOption<T_Bind>::type()const{
+        return Type::CONTINUOUS_OPTION;
     } // #END: type()
 
     // #FUNCTION: bind(const std::string&), Override Method
-    template<class T_Bind> std::expected<void, Error> VariadicOption<T_Bind>::bind(const std::string& p_bind){
+    template<class T_Bind> std::expected<void, Error> ContinuousOption<T_Bind>::bind(const std::string& p_bind){
         if(m_bind && m_converter){
             if(auto result = m_converter(p_bind)){
                 m_bind->push_back(result.value());
@@ -170,7 +175,7 @@ namespace simpleCLI::arguments{ // #SCOPE: arguments
         }
     } // #END: bind(const std::string&)
 
-// #END: VariadicOption<T_Bind>
+// #END: ContinuousOption<T_Bind>
 
 // #SCOPE: Command<T_Call>
 
@@ -280,5 +285,5 @@ namespace simpleCLI::arguments{ // #SCOPE: arguments
 
 // #END: Program<T_Bind>
 
-} // #END: arguments
+} // #END: simpleCli
 

@@ -10,6 +10,7 @@
 #include <expected>
 #include <initializer_list>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 #include <concepts>
 #include <cstring>

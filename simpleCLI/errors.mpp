@@ -1,0 +1,9 @@
+module;
+
+#include "stdIncludes.hpp"
+
+export module simpleCli:errors;
+
+#define INCLUDED_BY_MODULE
+#include "errors.hpp"
+#undef INCLUDED_BY_MODULE

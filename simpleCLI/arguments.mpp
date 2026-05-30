@@ -1,0 +1,11 @@
+module;
+
+#include "stdIncludes.hpp"
+
+export module simpleCli:arguments;
+
+import :errors;
+
+#define INCLUDED_BY_MODULE
+#include "arguments.hpp"
+#undef INCLUDED_BY_MODULE

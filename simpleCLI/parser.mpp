@@ -1,0 +1,12 @@
+module;
+
+#include "stdIncludes.hpp"
+
+export module simpleCli:parser;
+
+import :arguments;
+import :errors;
+
+#define INCLUDED_BY_MODULE
+#include "parser.hpp"
+#undef INCLUDED_BY_MODULE

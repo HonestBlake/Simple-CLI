@@ -1,6 +1,16 @@
-#include "errors.hpp" // #INCLUDE: errors.hpp, Module Header
+#ifdef SIMPLE_CLI_USE_MODULES
+    module;
 
-namespace simpleCLI::errors{ // #SCOPE: errors
+    #include "stdIncludes.hpp"
+
+    module simpleCli;
+
+    import :errors;
+#else
+    #include "errors.hpp" // #INCLUDE: errors.hpp, Module Header
+#endif
+
+namespace simpleCli{ // #SCOPE: simpleCli
 
 // #SCOPE: Error
 
@@ -67,4 +77,4 @@ namespace simpleCLI::errors{ // #SCOPE: errors
 
 // #END: Error
 
-} // #END: errors
+} // #END: simpleCli
